@@ -60,20 +60,11 @@ All notable changes to this project will be documented in this file.
 The format is based on [Keep a Changelog](https://keepachangelog.com/en/1.0.0/),
 and this project adheres to [Semantic Versioning](https://semver.org/spec/v2.0.0.html).
 
-## [Unreleased]
-
-- Initial development.
-
 `;
 	fs.writeFileSync(changelogPath, initial, 'utf8');
 }
 
-function buildEntryBody(existingContent) {
-	const unreleasedMatch = existingContent.match(/## \[Unreleased\]([\s\S]*?)(?=## \[|$)/);
-	if (unreleasedMatch && unreleasedMatch[1].trim()) {
-		return unreleasedMatch[1].trim();
-	}
-
+function buildEntryBody() {
 	try {
 		let lastTag = '';
 		try {
@@ -101,6 +92,99 @@ function buildEntryBody(existingContent) {
 	} catch (error) {
 		return '- Version update';
 	}
+}
+
+/**
+ * @param {string} targetVersion
+ * @return {string}
+ */
+function getChangelogEntryBody(targetVersion) {
+	if (!fs.existsSync(changelogPath)) {
+		return '';
+	}
+
+	const content = fs.readFileSync(changelogPath, 'utf8');
+	const escapedVersion = targetVersion.replace(/\./g, '\\.');
+	const match = content.match(
+		new RegExp(`## \\[${escapedVersion}\\] - [0-9-]+\\n\\n([\\s\\S]*?)(?=\\n## \\[|$)`)
+	);
+
+	return match && match[1] ? match[1].trim() : '';
+}
+
+/**
+ * @param {string} body
+ * @return {string}
+ */
+function markdownBulletsToReadmeTxt(body) {
+	return body
+		.split('\n')
+		.map((line) => line.replace(/^- /, '* '))
+		.filter((line) => line.length > 0)
+		.join('\n');
+}
+
+/**
+ * @param {string} body
+ * @param {string} sectionTitle
+ * @return {string}
+ */
+function upsertMarkdownChangelogSection(body, sectionTitle) {
+	if (!fs.existsSync(readmeMdPath) || '' === body) {
+		return;
+	}
+
+	let content = fs.readFileSync(readmeMdPath, 'utf8');
+	content = content.replace(/\n### Unreleased\n[\s\S]*?(?=\n### |\n---|\n## |$)/, '\n');
+	content = content.replace(/\*\*Version:\*\*\s*[0-9]+\.[0-9]+\.[0-9]+/, `**Version:** ${version}`);
+
+	const section = `### ${sectionTitle}\n\n${body}\n`;
+	const escapedTitle = sectionTitle.replace(/\./g, '\\.');
+	const sectionPattern = new RegExp(`### ${escapedTitle}\\n\\n[\\s\\S]*?(?=\\n### |\\n---|\\n## |$)`);
+
+	if (sectionPattern.test(content)) {
+		content = content.replace(sectionPattern, `${section.trim()}\n`);
+	} else {
+		content = content.replace(/(## Changelog\n\n)/, `$1${section}\n`);
+	}
+
+	fs.writeFileSync(readmeMdPath, content, 'utf8');
+}
+
+/**
+ * @param {string} body
+ * @param {string} sectionTitle
+ * @return {void}
+ */
+function upsertReadmeTxtChangelogSection(body, sectionTitle) {
+	if (!fs.existsSync(readmeTxtPath) || '' === body) {
+		return;
+	}
+
+	let content = fs.readFileSync(readmeTxtPath, 'utf8');
+	content = content.replace(/\n= Unreleased =\n[\s\S]*?(?=\n= |\n== |$)/, '\n');
+
+	const section = `= ${sectionTitle} =\n${markdownBulletsToReadmeTxt(body)}\n`;
+	const escapedTitle = sectionTitle.replace(/\./g, '\\.');
+	const sectionPattern = new RegExp(`= ${escapedTitle} =\\n[\\s\\S]*?(?=\\n= |\\n== |$)`);
+
+	if (sectionPattern.test(content)) {
+		content = content.replace(sectionPattern, section.trim());
+	} else {
+		content = content.replace(/(== Changelog ==\n\n)/, `$1${section}\n`);
+	}
+
+	fs.writeFileSync(readmeTxtPath, content, 'utf8');
+}
+
+function syncPublicChangelogs() {
+	const entryBody = getChangelogEntryBody(version);
+	if ('' === entryBody) {
+		return;
+	}
+
+	upsertMarkdownChangelogSection(entryBody, version);
+	upsertReadmeTxtChangelogSection(entryBody, version);
 }
 
 function upsertChangelog() {

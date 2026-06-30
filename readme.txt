@@ -111,13 +111,14 @@ Modify the post used for the Cover featured image.
 
 == Changelog ==
 
-= Unreleased =
+= 1.2.1 =
 * Default source is now **Disabled**
 * Added **Random from entire archive**
 * **First listed post** skips posts without a featured image
 * Improved detection for Cover blocks inside **Post Template**
 * Invalid source values fall back to **Disabled**
 * Added PHPCS / Composer lint setup
+* Added translation and release tooling with German (`de_DE`) catalog
 
 = 1.2.0 =
 * Added **Disabled** image source option for covers with inner Query Loops
@@ -140,6 +141,9 @@ Modify the post used for the Cover featured image.
 * Initial release: resolve featured image from first main-query post on list views
 
 == Upgrade Notice ==
+
+= 1.2.1 =
+Adds Disabled default, random-from-archive mode, German translations, and release tooling. Recommended update for archive header covers.
 
 = 1.2.0 =
 Adds Disabled mode and fixes conflicts with Query Loops inside Cover blocks. Recommended for header covers with custom loops.

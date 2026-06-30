@@ -2,7 +2,7 @@
 
 Resolves the WordPress Cover block **Use featured image** setting on blog home, archives, and search results — where the block usually has no post context outside the main loop.
 
-**Version:** 1.2.0  
+**Version:** 1.2.1  
 **Author:** [webentwicklerin, Gabriele Laesser](https://webentwicklerin.at)  
 **License:** GPL-2.0-or-later  
 **Requires WordPress:** 6.0+  
@@ -277,7 +277,7 @@ For Covers that contain Query Loops or other blocks that depend on their own pos
 
 ## Changelog
 
-### Unreleased
+### 1.2.1
 
 - Default source is now **Disabled**
 - Added **Random from entire archive**
@@ -285,6 +285,7 @@ For Covers that contain Query Loops or other blocks that depend on their own pos
 - Improved detection for Cover blocks inside **Post Template**
 - Invalid source values fall back to **Disabled**
 - Added PHPCS / Composer lint setup
+- Added translation and release tooling with German (`de_DE`) catalog
 
 ### 1.2.0
 
