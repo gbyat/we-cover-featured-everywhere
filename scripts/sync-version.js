@@ -194,7 +194,7 @@ function upsertChangelog() {
 	const hasVersion = new RegExp(`## \\[${escapedVersion}\\]`).test(content);
 
 	if (!hasVersion) {
-		const entryBody = buildEntryBody(content);
+		const entryBody = buildEntryBody();
 		const newEntry = `## [${version}] - ${today}
 
 ${entryBody}
@@ -208,7 +208,7 @@ ${entryBody}
 		}
 	}
 
-	content = content.replace(/## \[Unreleased\]([\s\S]*?)(?=## \[|$)/, '## [Unreleased]\n\n');
+	content = content.replace(/\n## \[Unreleased\][\s\S]*?(?=\n## \[|$)/, '');
 
 	const linkLine = `[${version}]: https://github.com/${repoSlug}/releases/tag/v${version}`;
 	if (!content.includes(linkLine)) {
@@ -222,5 +222,6 @@ updatePluginMainFile();
 updateReadmeStableTag(readmeMdPath, true);
 updateReadmeStableTag(readmeTxtPath, false);
 upsertChangelog();
+syncPublicChangelogs();
 
 console.log(`Version synchronized to ${version}.`);
