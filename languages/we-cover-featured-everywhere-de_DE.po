@@ -62,4 +62,3 @@ msgstr "Zufällig aus gesamtem Archiv"
 msgid "Applies on blog home, archives, and search results when no post context is available. Choose Disabled for covers that contain their own query loops."
 msgstr "Gilt auf Blog-Startseite, Archiven und Suchergebnissen, wenn kein Beitragskontext verfügbar ist. Wähle „Deaktiviert“ für Cover mit eigenen Abfrage-Loops."
 
-

@@ -3,7 +3,7 @@
 /**
  * Plugin Name: WE Cover Featured Everywhere
  * Description: Resolves Cover block "Use featured image" on list views with Disabled (default), first/random from the current page, or random from the entire archive.
- * Version: 1.2.0
+ * Version: 1.2.1
  * Author: webentwicklerin, Gabriele Laesser
  * Author URI: https://webentwicklerin.at
  * Text Domain: we-cover-featured-everywhere
@@ -19,7 +19,7 @@ if (! defined('ABSPATH')) {
 	exit;
 }
 
-define('WE_COVER_FEATURED_EVERYWHERE_VERSION', '1.2.0');
+define( 'WE_COVER_FEATURED_EVERYWHERE_VERSION', '1.2.1' );
 
 /**
  * Loads plugin translations.
