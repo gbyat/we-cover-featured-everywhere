@@ -1,0 +1,21 @@
+node_modules/
+vendor/
+wp-cli.phar
+
+# Editor / local tooling
+.vscode/
+.cursor/hooks/
+.cursor/hooks.json
+
+# OS / logs
+Thumbs.db
+.DS_Store
+*.log
+release_notes.txt
+
+# Composer / PHP tool caches
+.phpcs-cache
+.phpunit.result.cache
+
+# Local release ZIP (npm run zip / npm run pack)
+*.zip

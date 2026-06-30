@@ -1,0 +1,65 @@
+msgid ""
+msgstr ""
+"Project-Id-Version: WE Cover Featured Everywhere 1.2.0\n"
+"Report-Msgid-Bugs-To: https://wordpress.org/support/plugins/we-cover-featured-everywhere\n"
+"Last-Translator: webentwicklerin, Gabriele Laesser <hello@webentwicklerin.at>\n"
+"Language-Team: webentwicklerin, Gabriele Laesser <hello@webentwicklerin.at>\n"
+"MIME-Version: 1.0\n"
+"Content-Type: text/plain; charset=utf-8\n"
+"Content-Transfer-Encoding: 8bit\n"
+"POT-Creation-Date: 2026-06-30T14:21:57+00:00\n"
+"PO-Revision-Date: 2026-MO-DA HO:MI+ZONE\n"
+"Language: en\n"
+"Plural-Forms: nplurals=2; plural=(n!=1);\n"
+"X-Generator: @wp-blocks/make-pot 1.6.6\n"
+"X-Domain: we-cover-featured-everywhere\n"
+
+#. Name of the plugin
+#: we-cover-featured-everywhere.php
+msgid "WE Cover Featured Everywhere"
+msgstr "WE Cover Featured Everywhere"
+
+#. Description of the plugin
+#: we-cover-featured-everywhere.php
+msgid "Resolves Cover block \"Use featured image\" on list views with Disabled (default), first/random from the current page, or random from the entire archive."
+msgstr "Löst „Beitragsbild verwenden“ im Cover-Block auf Listenansichten auf – mit Deaktiviert (Standard), erstem/zufälligem Beitrag der aktuellen Seite oder zufällig aus dem gesamten Archiv."
+
+#. Author of the plugin
+#: we-cover-featured-everywhere.php
+msgid "webentwicklerin, Gabriele Laesser"
+msgstr "webentwicklerin, Gabriele Laesser"
+
+#. Author URI of the plugin
+#: we-cover-featured-everywhere.php
+msgid "https://webentwicklerin.at"
+msgstr "https://webentwicklerin.at"
+
+#: src/editor.js:54
+msgid "Archive featured image"
+msgstr "Beitragsbild auf Archivseiten"
+
+#: src/editor.js:61
+msgid "Image source on list views"
+msgstr "Bildquelle auf Listenansichten"
+
+#: src/editor.js:68
+msgid "Disabled"
+msgstr "Deaktiviert"
+
+#: src/editor.js:75
+msgid "First listed post"
+msgstr "Erster gelisteter Beitrag"
+
+#: src/editor.js:82
+msgid "Random from current page"
+msgstr "Zufällig von aktueller Seite"
+
+#: src/editor.js:89
+msgid "Random from entire archive"
+msgstr "Zufällig aus gesamtem Archiv"
+
+#: src/editor.js:99
+msgid "Applies on blog home, archives, and search results when no post context is available. Choose Disabled for covers that contain their own query loops."
+msgstr "Gilt auf Blog-Startseite, Archiven und Suchergebnissen, wenn kein Beitragskontext verfügbar ist. Wähle „Deaktiviert“ für Cover mit eigenen Abfrage-Loops."
+
+

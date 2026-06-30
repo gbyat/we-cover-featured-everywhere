@@ -1,0 +1,13 @@
+<?xml version="1.0"?>
+<ruleset name="WE Cover Featured Everywhere">
+	<description>PHPCS ruleset for WE Cover Featured Everywhere.</description>
+
+	<file>we-cover-featured-everywhere.php</file>
+
+	<rule ref="WordPress">
+		<exclude name="WordPress.Files.FileName.InvalidClassFileName"/>
+		<exclude name="WordPress.Files.FileName.NotHyphenatedLowercase"/>
+	</rule>
+
+	<config name="testVersion" value="7.4-"/>
+</ruleset>

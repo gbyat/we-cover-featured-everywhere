@@ -1,0 +1,13 @@
+{
+  "WE Cover Featured Everywhere": "WE Cover Featured Everywhere",
+  "Resolves Cover block \"Use featured image\" on list views with Disabled (default), first/random from the current page, or random from the entire archive.": "Löst „Beitragsbild verwenden“ im Cover-Block auf Listenansichten auf – mit Deaktiviert (Standard), erstem/zufälligem Beitrag der aktuellen Seite oder zufällig aus dem gesamten Archiv.",
+  "webentwicklerin, Gabriele Laesser": "webentwicklerin, Gabriele Laesser",
+  "https://webentwicklerin.at": "https://webentwicklerin.at",
+  "Archive featured image": "Beitragsbild auf Archivseiten",
+  "Image source on list views": "Bildquelle auf Listenansichten",
+  "Disabled": "Deaktiviert",
+  "First listed post": "Erster gelisteter Beitrag",
+  "Random from current page": "Zufällig von aktueller Seite",
+  "Random from entire archive": "Zufällig aus gesamtem Archiv",
+  "Applies on blog home, archives, and search results when no post context is available. Choose Disabled for covers that contain their own query loops.": "Gilt auf Blog-Startseite, Archiven und Suchergebnissen, wenn kein Beitragskontext verfügbar ist. Wähle „Deaktiviert“ für Cover mit eigenen Abfrage-Loops."
+}

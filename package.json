@@ -1,0 +1,54 @@
+{
+	"name": "we-cover-featured-everywhere",
+	"version": "1.2.0",
+	"description": "Resolves Cover block featured images on list views.",
+	"scripts": {
+		"build:assets": "wp-scripts build src/editor.js --output-path=build",
+		"build": "npm run build:assets && npm run zip",
+		"start": "wp-scripts start src/editor.js --output-path=build",
+		"lint:js": "wp-scripts lint-js",
+		"lint:php": "composer run lint",
+		"lint": "npm run lint:js && npm run lint:php",
+		"wp-cli:install": "node scripts/install-wp-cli.js",
+		"pot": "node scripts/update-pot.js",
+		"make-pot": "npm run pot",
+		"i18n:seed": "node scripts/seed-locale.js",
+		"i18n:po": "node scripts/seed-locale.js && node scripts/update-po.js",
+		"i18n:normalize": "node scripts/normalize-translation-encoding.js --write",
+		"i18n:sync": "node scripts/sync-catalog-keys.js",
+		"i18n:check": "node scripts/normalize-translation-encoding.js --check",
+		"i18n:translate": "npm run i18n:normalize && npm run i18n:sync && node scripts/apply-locale-catalog.js",
+		"i18n:mo": "node scripts/make-mo.js",
+		"i18n:json": "node scripts/make-json.js && node scripts/json-script-paths.js && node scripts/json-handle-aliases.js",
+		"json": "npm run i18n:json",
+		"i18n": "npm run build:assets && npm run pot && npm run i18n:po && npm run i18n:translate && npm run i18n:mo && npm run i18n:json && npm run i18n:check",
+		"sync:version": "node scripts/sync-version.js",
+		"release:patch": "node scripts/release.js patch",
+		"release:minor": "node scripts/release.js minor",
+		"release:major": "node scripts/release.js major",
+		"zip": "node scripts/build-release-zip.js",
+		"pack": "npm run build"
+	},
+	"engines": {
+		"node": ">=24"
+	},
+	"repository": {
+		"type": "git",
+		"url": "git+https://github.com/gbyat/we-cover-featured-everywhere.git"
+	},
+	"keywords": [
+		"wordpress",
+		"plugin",
+		"gutenberg",
+		"cover",
+		"i18n"
+	],
+	"author": "webentwicklerin, Gabriele Laesser <hello@webentwicklerin.at>",
+	"license": "GPL-2.0-or-later",
+	"devDependencies": {
+		"@wordpress/scripts": "^30.14.1",
+		"@wp-blocks/make-pot": "^1.6.3",
+		"archiver": "^7.0.1",
+		"iconv-lite": "^0.7.2"
+	}
+}

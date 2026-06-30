@@ -1,0 +1,29 @@
+{
+	"slug": "we-cover-featured-everywhere",
+	"name": "WE Cover Featured Everywhere",
+	"description": "Resolves Cover block \"Use featured image\" on list views with Disabled (default), first/random from the current page, or random from the entire archive.",
+	"textDomain": "we-cover-featured-everywhere",
+	"versionConstant": "WE_COVER_FEATURED_EVERYWHERE_VERSION",
+	"githubRepo": "gbyat/we-cover-featured-everywhere",
+	"locales": ["de_DE"],
+	"hasBlocks": true,
+	"potDomain": "plugin",
+	"potExclude": "**/node_modules/**,languages/**,scripts/**,**/*.min.js,build/**,dist/**,vendor/**",
+	"jsonHandleAliases": {
+		"src/editor.js": "we-cover-featured-everywhere-editor"
+	},
+	"jsonScriptPaths": [
+		"we-cover-featured-everywhere/build/editor.js",
+		"build/editor.js",
+		"plugins/we-cover-featured-everywhere/build/editor.js"
+	],
+	"zipInclude": {
+		"files": [
+			"we-cover-featured-everywhere.php",
+			"CHANGELOG.md",
+			"README.md",
+			"readme.txt"
+		],
+		"directories": ["languages", "build"]
+	}
+}
