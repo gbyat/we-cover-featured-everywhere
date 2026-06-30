@@ -2,7 +2,7 @@
 
 Resolves the WordPress Cover block **Use featured image** setting on blog home, archives, and search results — where the block usually has no post context outside the main loop.
 
-**Version:** 1.2.1  
+**Version:** 1.2.2  
 **Author:** [webentwicklerin, Gabriele Laesser](https://webentwicklerin.at)  
 **License:** GPL-2.0-or-later  
 **Requires WordPress:** 6.0+  
@@ -276,6 +276,11 @@ For Covers that contain Query Loops or other blocks that depend on their own pos
 ---
 
 ## Changelog
+
+### 1.2.2
+
+- Refactor changelog update logic to build entry body without parameters and improve Unreleased section handling. Add syncPublicChangelogs function call to ensure public changelogs are updated.
+- Update version to 1.2.1, enhance default source settings, add random archive option, improve detection for Cover blocks, and include German translation tooling.
 
 ### 1.2.1
 
