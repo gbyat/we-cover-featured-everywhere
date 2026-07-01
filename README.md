@@ -32,7 +32,7 @@ This plugin fills that gap by picking a post from the **main query** (the same p
   - **Disabled** — plugin does not alter this Cover on list views (use for covers that contain their own Query Loops)
   - **First listed post** — first post on the current page that has a featured image (respects pagination)
   - **Random from current page** — random featured image from posts on the current page that have a thumbnail
-  - **Random from entire archive** — random featured image from the full current archive/blog/search query (one lightweight query per page load)
+  - **Random from entire archive** — random featured image from the full current archive/blog/search query (cached per archive context, default 15 minutes)
 - Automatically skips Cover blocks inside **Post Template** blocks
 - Does **not** affect singular posts, pages, or other non-list views
 - Developer filter to override the picked post
@@ -150,7 +150,8 @@ All of the following must be true:
 Posts are taken from the **main query** (`$wp_query->posts`) — the same set of posts displayed on the current page, including pagination.
 
 - **First:** `$wp_query->posts[0]`
-- **Random:** random choice among posts that have `has_post_thumbnail()`; one pick cached per request so multiple Covers with random mode show the same image on one page load
+- **Random (current page):** random choice among posts that have `has_post_thumbnail()`; one pick cached per request
+- **Random (entire archive):** count + offset query (no `ORDER BY RAND()`); result cached per archive context (default 15 minutes, filterable)
 
 ### Rendering
 
@@ -193,6 +194,16 @@ add_filter( 'we_cover_featured_everywhere_picked_post', function ( $post, $sourc
 }, 10, 3 );
 ```
 
+### Filter: `we_cover_featured_everywhere_random_archive_cache_ttl`
+
+Cache duration in seconds for **Random from entire archive** picks (default `15 * MINUTE_IN_SECONDS`). Set to `0` to disable transient caching.
+
+```php
+add_filter( 'we_cover_featured_everywhere_random_archive_cache_ttl', function () {
+	return 10 * MINUTE_IN_SECONDS;
+} );
+```
+
 **Parameters:**
 
 - `$post` (`WP_Post`) — picked post
@@ -205,7 +216,7 @@ add_filter( 'we_cover_featured_everywhere_picked_post', function ( $post, $sourc
 
 If **Random from current page** or **Random from entire archive** appears to show the same image for a long time, your site may use **full-page caching** (hosting, plugin, or CDN). Random selection happens per PHP request; cached HTML freezes the result until the cache expires or is purged.
 
-**Random from entire archive** runs one additional `WP_Query` with `orderby=rand` and a featured-image meta check. This is lightweight for typical blogs and category archives. On very large archives (thousands of posts), database random ordering can become slower — use **Random from current page** or page caching in that case.
+**Random from entire archive** uses a count + offset query instead of `ORDER BY RAND()`, and caches the picked post ID per archive context (default **15 minutes**). Filter with `we_cover_featured_everywhere_random_archive_cache_ttl` (seconds; `0` disables caching). Full-page caching can still freeze the rendered HTML until the page cache expires.
 
 ---
 

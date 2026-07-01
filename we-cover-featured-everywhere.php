@@ -332,17 +332,27 @@ function we_cover_featured_everywhere_get_source($parsed_block)
  */
 function we_cover_featured_everywhere_pick_first_post_with_thumbnail($query)
 {
+	static $first_pick     = null;
+	static $first_resolved = false;
+
+	if ($first_resolved) {
+		return $first_pick;
+	}
+
+	$first_resolved = true;
+
 	if (! $query instanceof WP_Query || empty($query->posts) || ! is_array($query->posts)) {
 		return null;
 	}
 
 	foreach ($query->posts as $post) {
 		if ($post instanceof WP_Post && has_post_thumbnail($post->ID)) {
-			return $post;
+			$first_pick = $post;
+			break;
 		}
 	}
 
-	return null;
+	return $first_pick;
 }
 
 /**
@@ -382,9 +392,84 @@ function we_cover_featured_everywhere_pick_random_from_page($query)
 }
 
 /**
+ * Builds WP_Query args for archive-wide featured-image picks.
+ *
+ * Mirrors the main query context and limits results to posts with thumbnails.
+ *
+ * @param WP_Query $query Main query.
+ *
+ * @return array
+ */
+function we_cover_featured_everywhere_build_archive_thumbnail_query_args($query)
+{
+	if (! $query instanceof WP_Query) {
+		return array();
+	}
+
+	$args = $query->query_vars;
+
+	$args['posts_per_page']         = 1;
+	$args['paged']                  = 1;
+	$args['ignore_sticky_posts']    = true;
+	$args['update_post_meta_cache'] = false;
+	$args['update_post_term_cache'] = false;
+
+	unset($args['offset'], $args['orderby'], $args['order']);
+
+	$meta_query   = isset($args['meta_query']) && is_array($args['meta_query']) ? $args['meta_query'] : array();
+	$meta_query[] = array(
+		'key'     => '_thumbnail_id',
+		'compare' => 'EXISTS',
+	);
+	$args['meta_query'] = $meta_query;
+
+	return $args;
+}
+
+/**
+ * Returns a transient cache key for random_archive picks.
+ *
+ * @param WP_Query $query Main query.
+ *
+ * @return string
+ */
+function we_cover_featured_everywhere_get_archive_random_cache_key($query)
+{
+	if (! $query instanceof WP_Query) {
+		return 'we_cfe_rand_default';
+	}
+
+	$vars      = $query->query_vars;
+	$relevant  = array(
+		'post_type'     => isset($vars['post_type']) ? $vars['post_type'] : 'post',
+		'cat'           => isset($vars['cat']) ? $vars['cat'] : '',
+		'category_name' => isset($vars['category_name']) ? $vars['category_name'] : '',
+		'tag'           => isset($vars['tag']) ? $vars['tag'] : '',
+		'tag_id'        => isset($vars['tag_id']) ? $vars['tag_id'] : '',
+		'author'        => isset($vars['author']) ? $vars['author'] : '',
+		'author_name'   => isset($vars['author_name']) ? $vars['author_name'] : '',
+		'year'          => isset($vars['year']) ? $vars['year'] : '',
+		'monthnum'      => isset($vars['monthnum']) ? $vars['monthnum'] : '',
+		'day'           => isset($vars['day']) ? $vars['day'] : '',
+		's'             => isset($vars['s']) ? $vars['s'] : '',
+		'tax_query'     => isset($vars['tax_query']) ? $vars['tax_query'] : array(),
+	);
+	$cache_key = 'we_cfe_rand_' . md5(wp_json_encode($relevant));
+
+	/**
+	 * Filters the transient cache key for random_archive picks.
+	 *
+	 * @param string   $cache_key Cache key.
+	 * @param WP_Query $query     Main query.
+	 */
+	return apply_filters('we_cover_featured_everywhere_random_archive_cache_key', $cache_key, $query);
+}
+
+/**
  * Picks a random post with a featured image from the entire current archive query.
  *
- * Uses one lightweight random query that mirrors the main query context.
+ * Uses a count + offset strategy instead of ORDER BY RAND(), and caches the pick
+ * per archive context to avoid repeated heavy queries.
  *
  * @param WP_Query $query Main query.
  *
@@ -402,32 +487,63 @@ function we_cover_featured_everywhere_pick_random_from_archive($query)
 		return null;
 	}
 
-	$args = $query->query_vars;
+	$base_args = we_cover_featured_everywhere_build_archive_thumbnail_query_args($query);
 
-	$args['posts_per_page']         = 1;
-	$args['paged']                  = 1;
-	$args['orderby']                = 'rand';
-	$args['no_found_rows']          = true;
-	$args['ignore_sticky_posts']    = true;
-	$args['update_post_meta_cache'] = false;
-	$args['update_post_term_cache'] = false;
-
-	unset($args['offset']);
-
-	$meta_query   = isset($args['meta_query']) && is_array($args['meta_query']) ? $args['meta_query'] : array();
-	$meta_query[] = array(
-		'key'     => '_thumbnail_id',
-		'compare' => 'EXISTS',
-	);
-	$args['meta_query'] = $meta_query;
-
-	$random_query = new WP_Query($args);
-
-	if (empty($random_query->posts[0]) || ! ($random_query->posts[0] instanceof WP_Post)) {
+	if (empty($base_args)) {
 		return null;
 	}
 
-	$random_archive_pick = $random_query->posts[0];
+	$cache_key = we_cover_featured_everywhere_get_archive_random_cache_key($query);
+	$cached_id = get_transient($cache_key);
+
+	if ($cached_id) {
+		$cached_post = get_post((int) $cached_id);
+
+		if ($cached_post instanceof WP_Post && has_post_thumbnail($cached_post->ID)) {
+			$random_archive_pick = $cached_post;
+			return $random_archive_pick;
+		}
+
+		delete_transient($cache_key);
+	}
+
+	$count_args                    = $base_args;
+	$count_args['fields']          = 'ids';
+	$count_args['no_found_rows']   = false;
+	$count_args['posts_per_page']  = 1;
+
+	$count_query = new WP_Query($count_args);
+	$total       = (int) $count_query->found_posts;
+
+	if ($total < 1) {
+		return null;
+	}
+
+	$pick_args                   = $base_args;
+	$pick_args['posts_per_page'] = 1;
+	$pick_args['offset']         = wp_rand(0, $total - 1);
+	$pick_args['orderby']        = 'ID';
+	$pick_args['order']          = 'ASC';
+	$pick_args['no_found_rows']  = true;
+
+	$pick_query = new WP_Query($pick_args);
+
+	if (empty($pick_query->posts[0]) || ! ($pick_query->posts[0] instanceof WP_Post)) {
+		return null;
+	}
+
+	$random_archive_pick = $pick_query->posts[0];
+
+	/**
+	 * Filters transient cache TTL (seconds) for random_archive picks.
+	 *
+	 * @param int $ttl Default 15 minutes.
+	 */
+	$cache_ttl = (int) apply_filters('we_cover_featured_everywhere_random_archive_cache_ttl', 15 * MINUTE_IN_SECONDS);
+
+	if ($cache_ttl > 0) {
+		set_transient($cache_key, $random_archive_pick->ID, $cache_ttl);
+	}
 
 	return $random_archive_pick;
 }
