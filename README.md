@@ -2,7 +2,7 @@
 
 Resolves the WordPress Cover block **Use featured image** setting on blog home, archives, and search results — where the block usually has no post context outside the main loop.
 
-**Version:** 1.2.2  
+**Version:** 1.2.3  
 **Author:** [webentwicklerin, Gabriele Laesser](https://webentwicklerin.at)  
 **License:** GPL-2.0-or-later  
 **Requires WordPress:** 6.0+  
@@ -287,6 +287,10 @@ For Covers that contain Query Loops or other blocks that depend on their own pos
 ---
 
 ## Changelog
+
+### 1.2.3
+
+- Enhance random image selection logic in README and PHP files. Update caching mechanism for "Random from entire archive" to use count + offset strategy, improving performance. Add new filter for cache duration and clarify behavior in documentation.
 
 ### 1.2.2
 

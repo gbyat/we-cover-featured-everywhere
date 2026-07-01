@@ -4,7 +4,7 @@ Tags: cover, featured image, block, fse, full site editing, archive, query loop
 Requires at least: 6.0
 Tested up to: 7.0
 Requires PHP: 7.4
-Stable tag: 1.2.2
+Stable tag: 1.2.3
 License: GPLv2 or later
 License URI: https://www.gnu.org/licenses/gpl-2.0.html
 
@@ -110,6 +110,9 @@ Modify the post used for the Cover featured image.
 * Allowed values: `off`, `first`, `random`, `random_archive`
 
 == Changelog ==
+
+= 1.2.3 =
+* Enhance random image selection logic in README and PHP files. Update caching mechanism for "Random from entire archive" to use count + offset strategy, improving performance. Add new filter for cache duration and clarify behavior in documentation.
 
 = 1.2.2 =
 * Refactor changelog update logic to build entry body without parameters and improve Unreleased section handling. Add syncPublicChangelogs function call to ensure public changelogs are updated.
